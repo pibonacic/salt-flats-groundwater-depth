@@ -1,0 +1,41 @@
+---
+title: "Estructura de proyecto final"
+author: "Pedro Bonacic Vera"
+toc: true
+format:
+  html:
+    self-contained: true
+execute:
+  warning: false
+---
+
+## Introducción/contexto
+
+Dos alternativas (no excluyentes):
+a. Establecimiento de la relevancia de la investigación
+b. Contextualización del área de estudio y de los sensores usados
+
+![Localización del área de estudio](../figures/localizacion_v3.png){width=100%}
+
+## Resultados/análisis exploratorio
+
+Intercalar secuencias de texto introductorio y explicativo con gráficas clave.
+
+### Visualización preliminar
+
+- Gráficas de series temporales: facet de tres filas mostrando los datos disponibles de profundidad del nivel freático (GWD) (dos pozos?), contenido de agua y temperatura del suelo a diferentes profundidades (15, 30 y 48 cm). Gráficos comparten el eje del tiempo. Escala diaria.
+- Gráficos de dispersión: facet de dos filas y tres columnas mostrando las relaciones entre contenido de agua y temperatura del suelo (filas) y la profundidad del nivel freático a las tres profundidades (columnas). El eje x es siempre GWD (la variable independiente). Escala diaria.
+
+### Correlaciones cruzadas
+
+- Tabla con resultados de tests para evaluar estacionariedad de los datos (ADF, KPSS) antes y después del detrending.
+- Gráficas de series temporales sin tendencia: similar a gráfica 1.
+- Gráficas de coeficientes de correlación anuales: dos facet (uno por variable: contenido de agua y temperatura), cada uno de tres filas (una por profundidad). Los gráficos comparten el eje X (número de lags).
+- Gráficas de coeficientes de correlación para una temporada específica (dependiente de la visualización preliminar).
+
+## Conclusiones/desafíos
+Desarrollar una conclusión a partir de los resultados iniciales y cuáles serían próximos pasos a desarrollar para continuar con la investigación:
+
+- Exploración de correlaciones en diferentes momentos temporales
+- Exploración de correlaciones con datos de otros sitios
+- Exploración de correlaciones con otro tipo de datos (meteorológicos, flujos de calor)

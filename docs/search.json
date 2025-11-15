@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Estructura de proyecto final",
+    "section": "",
+    "text": "Dos alternativas (no excluyentes): a. Establecimiento de la relevancia de la investigación b. Contextualización del área de estudio y de los sensores usados\n\n\n\nLocalización del área de estudio"
+  },
+  {
+    "objectID": "index.html#introduccióncontexto",
+    "href": "index.html#introduccióncontexto",
+    "title": "Estructura de proyecto final",
+    "section": "",
+    "text": "Dos alternativas (no excluyentes): a. Establecimiento de la relevancia de la investigación b. Contextualización del área de estudio y de los sensores usados\n\n\n\nLocalización del área de estudio"
+  },
+  {
+    "objectID": "index.html#resultadosanálisis-exploratorio",
+    "href": "index.html#resultadosanálisis-exploratorio",
+    "title": "Estructura de proyecto final",
+    "section": "Resultados/análisis exploratorio",
+    "text": "Resultados/análisis exploratorio\nIntercalar secuencias de texto introductorio y explicativo con gráficas clave.\n\nVisualización preliminar\n\nGráficas de series temporales: facet de tres filas mostrando los datos disponibles de profundidad del nivel freático (GWD) (dos pozos?), contenido de agua y temperatura del suelo a diferentes profundidades (15, 30 y 48 cm). Gráficos comparten el eje del tiempo. Escala diaria.\nGráficos de dispersión: facet de dos filas y tres columnas mostrando las relaciones entre contenido de agua y temperatura del suelo (filas) y la profundidad del nivel freático a las tres profundidades (columnas). El eje x es siempre GWD (la variable independiente). Escala diaria.\n\n\n\nCorrelaciones cruzadas\n\nTabla con resultados de tests para evaluar estacionariedad de los datos (ADF, KPSS) antes y después del detrending.\nGráficas de series temporales sin tendencia: similar a gráfica 1.\nGráficas de coeficientes de correlación anuales: dos facet (uno por variable: contenido de agua y temperatura), cada uno de tres filas (una por profundidad). Los gráficos comparten el eje X (número de lags).\nGráficas de coeficientes de correlación para una temporada específica (dependiente de la visualización preliminar)."
+  },
+  {
+    "objectID": "index.html#conclusionesdesafíos",
+    "href": "index.html#conclusionesdesafíos",
+    "title": "Estructura de proyecto final",
+    "section": "Conclusiones/desafíos",
+    "text": "Conclusiones/desafíos\nDesarrollar una conclusión a partir de los resultados iniciales y cuáles serían próximos pasos a desarrollar para continuar con la investigación:\n\nExploración de correlaciones en diferentes momentos temporales\nExploración de correlaciones con datos de otros sitios\nExploración de correlaciones con otro tipo de datos (meteorológicos, flujos de calor)"
+  }
+]
