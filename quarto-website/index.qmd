@@ -12,8 +12,8 @@ execute:
 ## Introducción/contexto
 
 Dos alternativas (no excluyentes):
-a. Establecimiento de la relevancia de la investigación
-b. Contextualización del área de estudio y de los sensores usados
+- Establecimiento de la relevancia de la investigación
+- Contextualización del área de estudio y de los sensores usados
 
 ![Localización del área de estudio](../figures/localizacion_v3.png){width=100%}
 
@@ -21,9 +21,133 @@ b. Contextualización del área de estudio y de los sensores usados
 
 Intercalar secuencias de texto introductorio y explicativo con gráficas clave.
 
+### Preprocesamiento
+
+Lectura de datos
+```{python}
+#| echo: true
+#| code-fold: true
+
+import pandas as pd
+import seaborn as sns
+
+piezometric_data = pd.read_csv(
+  '../data/processed/03_daily/piezo-data_SDH1PS01_daily.csv', 
+  parse_dates=['Timestamps'], 
+  index_col='Timestamps',
+  usecols=['Timestamps', 'depth_m'])
+
+soil_data = pd.read_csv(
+  '../data/processed/03_daily/soil-data_z6-25818_daily.csv', 
+  parse_dates=['Timestamps'], 
+  index_col='Timestamps',
+  usecols=['Timestamps',
+           'TEROS12_15cm_water-content_m3/m3',
+           'TEROS12_30cm_water-content_m3/m3',
+           'TEROS12_48cm_water-content_m3/m3',
+           'TEROS12_15cm_soil-temperature_degree_C',
+           'TEROS12_30cm_soil-temperature_degree_C',
+           'TEROS12_48cm_soil-temperature_degree_C'
+           ])
+  
+```
+
+Transformación de datos a formato largo
+```{python}
+#| echo: true
+#| code-fold: true
+
+# Renombra columna para permitir transformacion
+piezometric_data = piezometric_data.rename(
+  columns={'depth_m': 'SDH1PS01_depth_m'}
+  )
+
+# Une los datos piezometricos y de suelos
+df_merged = pd.merge(piezometric_data, soil_data, on='Timestamps', how='inner').reset_index()
+
+# Transforma los datos a formato largo
+df_long = df_merged.melt(
+    id_vars=['Timestamps'],
+    var_name='sensor_variable', # Columna temporal que une sensor y variable
+    value_name='value'
+    )
+
+# Genera nuevas columnas de sensor y variable
+df_long[['sensor', 'variable']] = df_long['sensor_variable'].str.extract(r'(.*)_(depth_m|water-content.*|soil-temperature.*)')
+
+# Genera el df largo final
+df_long = df_long[['Timestamps', 'sensor', 'variable', 'value']]
+
+```
+
 ### Visualización preliminar
 
-- Gráficas de series temporales: facet de tres filas mostrando los datos disponibles de profundidad del nivel freático (GWD) (dos pozos?), contenido de agua y temperatura del suelo a diferentes profundidades (15, 30 y 48 cm). Gráficos comparten el eje del tiempo. Escala diaria.
+Series temporales de profundidad del agua subterránea, contenido de agua del suelo y temperatura del suelo a diferentes profundidades
+```{python}
+#| echo: true
+#| code-fold: true
+#| fig-cap: 'Series temporales'
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Establede el tema del grafico
+sns.set_theme(style="ticks", context="notebook")
+
+# Crea el grafico
+g = sns.relplot(
+    data=df_long,
+    x='Timestamps',
+    y='value',
+    row='variable',
+    hue='sensor',
+    kind='line',
+    height=3,
+    aspect=4,
+    facet_kws={'sharey': False, 'sharex': True}
+)
+
+g.set_titles("")
+g.set_xlabels("")
+g.legend.set_title(" ")
+sns.move_legend(g, "upper right")
+
+ylabel_map = {
+    'depth_m': 'Profundidad del nivel freático (m)',
+    'water-content_m3/m3': 'Contenido de agua del suelo (m³/m³)',
+    'soil-temperature_degree_C': 'Temperatura del suelo (°C)'
+}
+
+# Iterar sobre cada subplot para aplicar cambios personalizados
+for ax, title in zip(g.axes.flat, g.row_names):
+    
+    if title in ylabel_map:
+        ax.set_ylabel(ylabel_map[title])
+    
+    if title == 'depth_m':
+        ax.invert_yaxis()
+
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Crear un diccionario para mapear los nombres de sensores a las nuevas etiquetas
+legend_map = {
+    'SDH1PS01': 'Piezómetro',
+    'TEROS12_15cm': 'Sensor a -15 cm',
+    'TEROS12_30cm': 'Sensor a -30 cm',
+    'TEROS12_48cm': 'Sensor a -48 cm'
+}
+
+# Reemplazar las etiquetas en la leyenda
+for t in g.legend.texts:
+    t.set_text(legend_map.get(t.get_text(), t.get_text()))
+
+plt.show()
+
+```
+
+
 - Gráficos de dispersión: facet de dos filas y tres columnas mostrando las relaciones entre contenido de agua y temperatura del suelo (filas) y la profundidad del nivel freático a las tres profundidades (columnas). El eje x es siempre GWD (la variable independiente). Escala diaria.
 
 ### Correlaciones cruzadas
