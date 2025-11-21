@@ -1,5 +1,5 @@
 ---
-title: "Estructura de proyecto final"
+title: "Exploración de las relaciones entre aguas subterráneas y variables edáficas"
 author: "Pedro Bonacic Vera"
 toc: true
 format:
@@ -9,21 +9,21 @@ execute:
   warning: false
 ---
 
-## Introducción/contexto
+## Contexto
 
-Dos alternativas (no excluyentes):
-- Establecimiento de la relevancia de la investigación
-- Contextualización del área de estudio y de los sensores usados
+Los humedales altoandinos son piezas clave de los balances de agua, energía y carbono en la región del Altiplano, procesos que dependen de la disponibilidad de aguas subterráneas cercanas a la superficie.
+Pese a su relevancia, estos ecosistemas enfrentan amenazas crecientes debido al cambio climático y la actividad minera. Además, los métodos de monitoreo hidrogeológico actuales son caros y difíciles de implementar en estos ambientes remotos.
+Por tanto, el objetivo de este trabajo es explorar las relaciones entre profundidad del agua subterránea y variables medidas en el suelo para evaluar el desarrollo de metodologías de monitoreo alternativas, usando el Salar del Huasco como caso de estudio.
 
-![Localización del área de estudio](../figures/localizacion_v3.png){width=100%}
+![Localización del Salar del Huasco y sus estaciones de monitoreo](../figures/localizacion_v3.png){width=100%}
 
-## Resultados/análisis exploratorio
+En la actualidad, se cuenta con dos estaciones de monitoreo en el sitio: norte y sur. En este trabajo se emplearán los datos recolectados en la estación norte, donde se cuenta con un piezómetro y tres sensores de suelo ubicados a diferentes profundidades (15, 30 y 48 cm). El piezómetro reporta la profundidad del nivel freático, mientras que los sensores de suelo, datos de contenido de agua (m³/m³)y temperatura (°C).
 
-Intercalar secuencias de texto introductorio y explicativo con gráficas clave.
+## Análisis exploratorio
 
-### Preprocesamiento
+Los datos obtenidos desde los piezómetros y sensores de suelo fueron formateados, se le removieron datos anómalos y se agregaron diariamente. Los scripts correspondientes están disponibles [aquí](https://github.com/pibonacic/salt-flats-groundwater-depth/tree/main/code). Los datos crudos y procesados están disponibles [aquí](https://github.com/pibonacic/salt-flats-groundwater-depth/tree/main/data).
 
-Lectura y formateo de datos
+En la siguiente celda de código se realiza el procesamiento previo a la visualización, consistente en la lectura y formateo de los datos diarios.
 ```{python}
 #| echo: true
 #| code-fold: true
@@ -92,7 +92,7 @@ soil_depth_order = ['15 cm', '30 cm', '48 cm']
 full_depth_order = ['15 cm', '30 cm', '48 cm', 'NA']
 ```
 
-### Visualización preliminar
+En primer lugar, se graficaron las series de tiempo de profundidad del nivel freático, así como de contenido de agua y temperatura del suelo a las tres profundidades disponibles.
 
 ```{python}
 #| echo: true
@@ -188,6 +188,8 @@ plt.show()
 
 ```
 
+Luego, se graficó la relación entre profundidad del nivel freático y las variables de suelo mediante gráficos de dispersión.
+
 ```{python}
 #| echo: true
 #| code-fold: true
@@ -275,14 +277,12 @@ plt.subplots_adjust(top=0.94, bottom=0.13, left=0.11) # Ajusta espacio disponibl
 plt.show()
 ```
 
-### Correlaciones cruzadas
-
 - Tabla con resultados de tests para evaluar estacionariedad de los datos (ADF, KPSS) antes y después del detrending.
 - Gráficas de series temporales sin tendencia: similar a gráfica 1.
 - Gráficas de coeficientes de correlación anuales: dos facet (uno por variable: contenido de agua y temperatura), cada uno de tres filas (una por profundidad). Los gráficos comparten el eje X (número de lags).
 - Gráficas de coeficientes de correlación para una temporada específica (dependiente de la visualización preliminar).
 
-## Conclusiones/desafíos
+## Desafíos
 Desarrollar una conclusión a partir de los resultados iniciales y cuáles serían próximos pasos a desarrollar para continuar con la investigación:
 
 - Exploración de correlaciones en diferentes momentos temporales
