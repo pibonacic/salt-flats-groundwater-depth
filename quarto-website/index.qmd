@@ -12,12 +12,14 @@ execute:
 ## Contexto
 
 Los humedales altoandinos son piezas clave de los balances de agua, energía y carbono en la región del Altiplano, procesos que dependen de la disponibilidad de aguas subterráneas cercanas a la superficie.
+
 Pese a su relevancia, estos ecosistemas enfrentan amenazas crecientes debido al cambio climático y la actividad minera. Además, los métodos de monitoreo hidrogeológico actuales son caros y difíciles de implementar en estos ambientes remotos.
+
 Por tanto, el objetivo de este trabajo es explorar las relaciones entre profundidad del agua subterránea y variables medidas en el suelo para evaluar el desarrollo de metodologías de monitoreo alternativas, usando el Salar del Huasco como caso de estudio.
 
 ![Localización del Salar del Huasco y sus estaciones de monitoreo](../figures/localizacion_v3.png){width=100%}
 
-En la actualidad, se cuenta con dos estaciones de monitoreo en el sitio: norte y sur. En este trabajo se emplearán los datos recolectados en la estación norte, donde se cuenta con un piezómetro y tres sensores de suelo ubicados a diferentes profundidades (15, 30 y 48 cm). El piezómetro reporta la profundidad del nivel freático, mientras que los sensores de suelo, datos de contenido de agua (m³/m³)y temperatura (°C).
+En la actualidad, se cuenta con dos estaciones de monitoreo en el sitio: norte y sur. En este trabajo se emplearán los datos recolectados en la estación norte, donde se cuenta con un piezómetro y tres sensores de suelo ubicados a diferentes profundidades (15, 30 y 48 cm). El piezómetro reporta la profundidad del nivel freático (m), mientras que los sensores de suelo, datos de contenido de agua (m³/m³)y temperatura (°C).
 
 ## Análisis exploratorio
 
@@ -97,7 +99,7 @@ En primer lugar, se graficaron las series de tiempo de profundidad del nivel fre
 ```{python}
 #| echo: true
 #| code-fold: true
-#| fig-cap: 'Series temporales'
+#| fig-cap: 'Series temporales de profundidad del nivel freático, contenido de agua y temperatura del suelo'
 
 # Configuración de estilo
 sns.set_theme(style="ticks", context="notebook", font_scale=1)
@@ -193,7 +195,7 @@ Luego, se graficó la relación entre profundidad del nivel freático y las vari
 ```{python}
 #| echo: true
 #| code-fold: true
-#| fig-cap: 'Scatter plots'
+#| fig-cap: 'Relaciones entre profundidad del nivel freático y variables edáficas'
 
 # Preparación de datos para scatter plot
 # Filtrar los datos de suelo
