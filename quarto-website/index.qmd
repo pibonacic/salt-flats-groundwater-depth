@@ -3,7 +3,7 @@ title: "Exploración de las relaciones entre aguas subterráneas y variables ed�
 author: "Pedro Bonacic Vera"
 toc: true
 format:
-  pdf:
+  html:
     self-contained: true
 execute:
   warning: false
