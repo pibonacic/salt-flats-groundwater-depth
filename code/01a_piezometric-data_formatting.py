@@ -8,10 +8,11 @@ import os
 # DEFINICION DE VARIABLES AUXILIARES
 
 # Diccionario con nombres de columna originales y nuevos
+# Estructura: Sensor_profundidad_variable_unidad
 columns_dict = {
-    'TEMPERATURE' : 'temperature_C',
-    'NE_m' : 'depth_m',
-    'Cota_m' : 'static_level_masl'
+    'TEMPERATURE' : 'Piezometer_NA_temperature_degreeC',
+    'NE_m' : 'Piezometer_NA_groundwater-depth_m',
+    'Cota_m' : 'Piezometer_NA_groundwater-level_masl'
 }
 
 # Lista con nombres de columnas no necesarias

@@ -148,8 +148,8 @@ def format_column_names(df, port_row, header_row, port_map):
 
         # Divide el texto del encabezado usando el primer espacio
         parts = header_text.split(' ', 1)
-        # Almacena la unidad de medida de la columna (primer elemento)
-        unit = parts[0]
+        # Almacena la unidad de medida de la columna (primer elemento) y la formatea
+        unit = parts[0].replace('_', '')
         # Almacena la variable medida en la columna (segundo elemento) y la formatea
         variable = parts[1].replace(' ', '-').lower()
 
