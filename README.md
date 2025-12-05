@@ -77,4 +77,4 @@ Se extiende un agradecimiento especial a los miembros del equipo [Altiplano Wetl
 
 
 ## Declaración de uso de inteligencia artificial generativa
-Durante el desarrollo de este trabajo, el autor utilizó Google Gemini para escribir y revisar código de programación. Después de usar la herramienta, el autor revisó críticamente y editó el contenido según fue necesario, y asume plena responsabilidad por la información presentada.
+Durante el desarrollo de este trabajo, el autor utilizó Google Gemini para escribir y revisar código de programación. El autor revisó críticamente y editó el contenido generado según fue necesario, y asume plena responsabilidad por la información presentada.
