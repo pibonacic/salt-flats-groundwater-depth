@@ -1,6 +1,6 @@
 # Exploración de las dinámicas entre suelo y aguas subterráneas en el Salar del Huasco
 
-Este repositorio presenta una propuesta de análisis exploratorio de datos piezométricos y edáficos usando el lenguaje de programación Python. El área de estudio es el [Salar del Huasco](https://maps.app.goo.gl/5Z6byBViTpMrvNR28), ubicado en el altiplano de la Región de Tarapacá, Chile. Este README describe los contenidos del repositorio. El análisis exploratorio está disponible en la [página web]([https://pibonacic.github.io/salt-flats-groundwater-depth/](https://pibonacic.github.io/Huasco-salt-flat-groundwater-and-soil-dynamics/). 
+Este repositorio presenta una propuesta de análisis exploratorio de datos piezométricos y edáficos usando el lenguaje de programación Python. El área de estudio es el [Salar del Huasco](https://maps.app.goo.gl/5Z6byBViTpMrvNR28), ubicado en el altiplano de la Región de Tarapacá, Chile. Este README describe los contenidos del repositorio. El análisis exploratorio está disponible en la [página web](https://pibonacic.github.io/Huasco-salt-flat-groundwater-and-soil-dynamics/). 
 
 ![Laguna](https://github.com/pibonacic/Huasco-salt-flat-groundwater-and-soil-dynamics/blob/main/figures/laguna.JPG)
 Laguna del Salar del Huasco.
