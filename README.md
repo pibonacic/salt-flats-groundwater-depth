@@ -1,18 +1,19 @@
 # Exploración de las dinámicas entre suelo y aguas subterráneas en el Salar del Huasco
 
-Este repositorio presenta una propuesta de análisis exploratorio de datos piezométricos y edáficos usando el lenguaje de programación Python. El área de estudio es el [Salar del Huasco](https://maps.app.goo.gl/5Z6byBViTpMrvNR28), ubicado en el altiplano de la Región de Tarapacá, Chile. Este README describe los contenidos del repositorio. El análisis exploratorio está disponible en la [página web](https://pibonacic.github.io/salt-flats-groundwater-depth/). 
+Este repositorio presenta una propuesta de análisis exploratorio de datos piezométricos y edáficos usando el lenguaje de programación Python. El área de estudio es el [Salar del Huasco](https://maps.app.goo.gl/5Z6byBViTpMrvNR28), ubicado en el altiplano de la Región de Tarapacá, Chile. Este README describe los contenidos del repositorio. El análisis exploratorio está disponible en la [página web]([https://pibonacic.github.io/salt-flats-groundwater-depth/](https://pibonacic.github.io/Huasco-salt-flat-groundwater-and-soil-dynamics/)). 
 
 ![Laguna](https://github.com/pibonacic/Huasco-salt-flat-groundwater-and-soil-dynamics/blob/main/figures/laguna.JPG)
 Laguna del Salar del Huasco.
 
 ## Objetivo
-Explorar las relaciones entre profundidad del agua subterránea y variables medidas en el suelo a diferentes profundidades en una estación de monitoreo del Salar del Huasco.
+Explorar las relaciones entre profundidad del agua subterránea y variables medidas en el suelo, usando el Salar del Huasco como caso de estudio.
 
 
 ## Audiencia
 Este repositorio está dirigido a estudiantes, investigadores y profesionales con interés en:
 - El estudio de la zona vadosa e hidrogeología en zonas áridas
-- El uso de Python para la automatización de análisis y visualización de datos ambientales 
+- El uso de Python para la automatización de análisis y visualización de datos ambientales
+- El análisis estadístico de series temporales de datos ambientales
 
 
 ## Estructura del repositorio
