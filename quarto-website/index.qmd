@@ -310,7 +310,7 @@ time_series = sns.relplot(
     hue_order=full_depth_order,
     kind='line',                    # Grafico de lineas
     height=3,
-    aspect=2.5,
+    aspect=2.45,
     facet_kws={'sharey': False, 'sharex':True}      # Eje Y independiente, eje X compartido
 )
 
