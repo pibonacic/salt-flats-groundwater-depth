@@ -3908,6 +3908,7 @@ vertical-align: -.125em;
   <li><a href="#contexto" id="toc-contexto" class="nav-link active" data-scroll-target="#contexto">Contexto</a></li>
   <li><a href="#análisis-exploratorio" id="toc-análisis-exploratorio" class="nav-link" data-scroll-target="#análisis-exploratorio">Análisis exploratorio</a></li>
   <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones">Conclusiones</a></li>
+  <li><a href="#agradecimientos" id="toc-agradecimientos" class="nav-link" data-scroll-target="#agradecimientos">Agradecimientos</a></li>
   </ul>
 </nav>
     </div>
@@ -3959,7 +3960,7 @@ vertical-align: -.125em;
 <p>En primer lugar, se graficaron las series de tiempo de profundidad del nivel freático, así como de contenido de agua y temperatura del suelo a las tres profundidades disponibles (Figura 2). Cabe mencionar que el eje Y del primer panel está invertido para facilitar la interpretación de la profundidad de las aguas subterráneas (la superficie está arriba).</p>
 <p>Se observa que la profundidad del nivel freático es variable en el tiempo, alcanzando máximos en primavera y mínimos en invierno. Aparentemente, el contenido de agua en el suelo a 15 y 30 cm sigue un patrón similar al de las aguas subterráneas, puesto que comparten momentos de ascenso y descenso. El contenido de agua a 48 cm muestra valores altos y estables durante el año (~0.45 m³/m³), lo que sugiere que a esta profundidad el suelo alcanza la saturación.</p>
 <p>Por otro lado, la temperatura del suelo tiene un marcado ciclo estacional, con valores máximos en verano y mínimos en invierno. A primera vista, no se observa una relación de esta variable con la profundidad del nivel freático.</p>
-<div id="b0e177fe" class="cell" data-execution_count="10">
+<div id="fb7069af" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creacion de la figura base</span></span>
@@ -4040,7 +4041,7 @@ vertical-align: -.125em;
 <p>Para evaluar la existencia de desfases temporales entre las series de datos se ejecutó un análisis de correlaciones cruzadas. En él, se calculó la correlación de Pearson entre la serie de profundidad del nivel freático y las series de contenido de agua y temperatura del suelo, desplazadas temporalmente hasta ±15 días (Figura 3). Desfases mayores no entregan relaciones significativas considerando un nivel de confianza del 95%. Previo al análisis, las series fueron diferenciadas para hacerlas <a href="https://otexts.com/fpp2/stationarity.html">estacionarias</a>.</p>
 <p>Para la variable de contenido de agua, se observa que la mayor correlación se da en el desfase cero, y es negativa para los tres sensores. Esto indica que un aumento en la profundidad de las aguas subterráneas se acompaña de una disminución del contenido de agua en el suelo (y viceversa). La resolución temporal del análisis no permite identificar cuál de los cambios ocurre primero, puesto que arroja que ambos suceden durante el mismo día (desfase cero). La relación más fuerte se da a 30 cm (~0.5), lo que sugiere la existencia de una buena conexión entre acuífero y suelo a dicha profundidad.</p>
 <p>Respecto a la temperatura del suelo, se constatan correlaciones negativas en el desfase -1 en los sensores a 30 y 48 cm, y sin desfase en el sensor a 15 cm. Los valores de correlación se consideraron muy bajos para hacer interpretaciones.</p>
-<div id="000e7c0d" class="cell" data-execution_count="11">
+<div id="f8a1bb39" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creacion de la figura base</span></span>
@@ -4125,7 +4126,7 @@ vertical-align: -.125em;
 <p>A fin de caracterizar la relación entre profundidad de las aguas subterráneas y las variables del suelo en diferentes temporadas, se generaron gráficos de dispersión a distintas profundidades con datos diferenciados por mes (Figura 4). Notar que los ejes Y están invertidos en todos los gráficos.</p>
 <p>Para ambas variables se observan signos de <a href="https://es.wikipedia.org/wiki/Histéresis">histéresis</a>, manifestada como la existencia de diferentes caminos para el aumento y descenso de las variables. En ese sentido, se constata la existencia de relaciones no lineales entre el contenido de agua y temperatura del suelo con la profundidad del nivel freático.</p>
 <p>Por otro lado, los gráficos permiten identificar el contenido de agua al que se alcanza la saturación en cada profundidad de suelo, la que se ve como una línea vertical. Se destaca que a mayor profundidad, más agua es capaz de contener el suelo. La independencia del contenido de agua con la profundidad del nivel freático en el sensor a 48 cm respalda su condición de saturación permanente. Del mismo modo, la temperatura parece no depender de la profundidad del agua subterránea, siendo las variaciones atribuibles a los cambios de estación.</p>
-<div id="b187e1b8" class="cell" data-execution_count="12">
+<div id="1ffc09f9" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creacion de la figura base</span></span>
@@ -4211,7 +4212,7 @@ vertical-align: -.125em;
 <p>Con el objetivo de visualizar la evolución de las correlaciones entre variables en diferentes estaciones del año, se hizo un análisis de correlación empleando ventanas móviles de 61 días. En él, se calculó la correlación de Pearson entre las series estacionarias para cada día disponible usando las observaciones de ±30 días, además del día presente (Figura 5). Se definió una ventana de dos meses para contar con un número de observaciones suficiente para el análisis estadístico, además de suavizar los resultados obtenidos y facilitar la interpretación.</p>
 <p>Las correlaciones más fuertes entre contenido de agua y profundidad del nivel freatico se dan durante el verano y son inversas. Aquella es la dirección esperada de la relación, puesto que implica que a mayor profundidad del nivel freático, menor es el contenido de agua (y viceversa). En esta temporada, la relación más fuerte se manifiesta a los 30 cm, lo que es concordante con los resultados de las correlaciones cruzadas. Llamativamente, durante la primavera (sep-nov) se da una relación directa entre estas variables, coincidentemente con el <em>peak</em> del nivel freático.</p>
 <p>En la variable temperatura se da un patrón opuesto: en primavera se dan relaciones inversas, siendo la correlación más fuerte la del sensor a 15 cm, mientras que en verano son directas, y la correlación más fuerte está a 48 cm.</p>
-<div id="fed7ce98" class="cell" data-execution_count="13">
+<div id="aa427c38" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creacion de la figura base</span></span>
@@ -4297,7 +4298,7 @@ vertical-align: -.125em;
 <p>Finalmente, se construyó un diagrama de Hövmoller para representar la evolución temporal de las variables de suelo en un perfil vertical, al cual se superpuso la profundidad de las aguas subterráneas (Figura 6). El perfil se obtuvo interpolando cada un centímetro los datos entre los sensores de suelo, para cada día disponible.</p>
 <p>En el diagrama superior se ve cómo la profundidad de las aguas subterráneas tiene un efecto sobre la distribución vertical del agua en el suelo: cuando el nivel freático está más alto, el suelo alcanza mayores valores de contenido de agua cerca de la superficie, y se reduce cuando el nivel desciende.</p>
 <p>Por el contrario, el diagrama de temperaturas no muestra una relación aparente con el nivel freático, sin embargo, permite visualizar que la temperatura en el perfil de suelo está condicionada a lo que ocurre en superficie. Durante el invierno es el enfriamiento superior el que se transmite hacia capas profundas, mientras que en verano la existencia de pulsos de calor contribuyen a aumentar la temperatura en profundidad. La distribución temporal de los pulsos sugiere que se trata de eventos de precipitación.</p>
-<div id="eb3229eb" class="cell" data-execution_count="14">
+<div id="18d1f15a" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definicion de funcion para generar un mapa de calor</span></span>
@@ -4415,6 +4416,11 @@ vertical-align: -.125em;
 <h2 class="anchored" data-anchor-id="conclusiones">Conclusiones</h2>
 <p>Los resultados de este trabajo sugieren que existe una conexión hidráulica casi inmediata entre la profundidad del nivel freático y el contenido de agua en el suelo, identificada mediante una correlación inversa sin desfase temporal. Sin embargo, esta relación no es lineal y está condicionada por la profundidad. Los sensores profundos (48 cm) permanecen en saturación casi permanente, lo que limita su sensibilidad a las fluctuaciones del acuífero, mientras que los sensores intermedios (30 cm) ofrecen el mejor rango dinámico para inferir fluctuaciones del nivel freático debido a su ubicación en la zona de oscilación de la franja capilar.</p>
 <p>El sistema exhibe un comportamiento complejo caracterizado por una histéresis estacional. Esto indica que los procesos de humedecimiento/secado y calentamiento/enfriamiento del suelo siguen trayectorias diferenciadas a lo largo del año. Esta complejidad se acentúa al observar la variabilidad temporal de las correlaciones en la variable de contenido de agua, puesto que el verano muestra el comportamiento inverso esperado, mientras que la primavera presenta anomalías de correlación directa. Si bien la temperatura del suelo parece estar controlada por forzantes de superficie, sin una dependencia directa de la posición del nivel freático, su análisis en el perfil vertical permitió identificar eventos de infiltración superficial.</p>
+</section>
+<section id="agradecimientos" class="level2">
+<h2 class="anchored" data-anchor-id="agradecimientos">Agradecimientos</h2>
+<p>Esta investigación es financiada por la Agencia Nacional de Investigación y Desarrollo de Chile (ANID), mediante los proyectos ATE/230006 y FONDECYT/1251067. El autor agradece a la Asociación Indígena Aymara Laguna del Huasco y a la Corporación Nacional Forestal (CONAF) por permitir el levantamiento de datos en el Salar del Huasco.</p>
+<p>Se extiende un agradecimiento especial a los miembros del equipo <a href="https://altiplanowetlands.cl">Altiplano Wetlands</a> que con gran esfuerzo están empujando la investigación en humedales altoandinos.</p>
 
 
 </section>
