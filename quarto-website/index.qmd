@@ -19,273 +19,7 @@ En el área de estudio se cuenta con dos estaciones de monitoreo: norte y sur (F
 ![Figura 1. Localización del Salar del Huasco y sus estaciones de monitoreo.](../figures/localizacion_v3.png){width=80%}
 
 ## Análisis exploratorio
-Los datos crudos registrados por los instrumentos fueron procesados previo a este análisis. Los _scripts_ están disponibles [aquí](https://github.com/pibonacic/salt-flats-groundwater-depth/tree/main/code) y los datos [aquí](https://github.com/pibonacic/salt-flats-groundwater-depth/tree/main/data). Las visualizaciones presentadas en esta sección contemplan transformaciones de datos que no se muestran en los bloques de código desplegables; el código completo está disponible en [este notebook](https://github.com/pibonacic/salt-flats-groundwater-depth/blob/main/code/04_all-data_exploratory-visualization.ipynb). Para más información, se recomienda revisar el [README](https://github.com/pibonacic/Huasco-salt-flat-groundwater-and-soil-dynamics/blob/main/README.md) del repositorio.
-
-```{python}
-#| echo: false
-
-# IMPORTACIONES
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import calendar
-import numpy as np
-```
-
-```{python}
-#| echo: false
-
-# FORMATO ANCHO
-# Carga de datos
-piezo_df = pd.read_csv(
-    '../data/processed/03_daily/piezo-data_SDH1PS01_daily.csv', 
-    parse_dates=['Timestamps'], index_col='Timestamps',
-    usecols=['Timestamps',
-             'Piezometer_NA_groundwater-depth_m']
-    )
-
-soil_df = pd.read_csv(
-    '../data/processed/03_daily/soil-data_z6-25818_daily.csv', 
-    parse_dates=['Timestamps'], index_col='Timestamps',
-    usecols=['Timestamps',
-             'TEROS12_15cm_water-content_m3/m3',
-             'TEROS12_30cm_water-content_m3/m3',
-             'TEROS12_48cm_water-content_m3/m3',
-             'TEROS12_15cm_soil-temperature_degreeC',
-             'TEROS12_30cm_soil-temperature_degreeC',
-             'TEROS12_48cm_soil-temperature_degreeC']
-    )
-
-# Union de datasets en formato ancho
-wide_df = pd.merge(piezo_df, soil_df, left_index=True, right_index=True, how='inner')
-```
-
-```{python}
-#| echo: false
-
-# FORMATO LARGO
-# Transformacion de datos a formato largo
-long_df = wide_df.reset_index().melt(
-    id_vars='Timestamps',       # Columna id
-    var_name='Metadata',        # Columna temporal en formato sensor_profundidad_variable
-    value_name='Value'          # Nombre columna que almacenara los valores 
-    )
-
-# Division de la columna de metadatos usando guiones bajos
-metadata_split = long_df['Metadata'].str.split('_', expand=True)
-
-# Generacion de nuevas columnas a partir del texto dividido
-long_df['Sensor'] = metadata_split[0]
-long_df['Depth'] = metadata_split[1]
-long_df['Variable'] = metadata_split[2]
-long_df['Unit'] = metadata_split[3]
-
-# Eliminacion de la columna metadata
-long_df = long_df.drop('Metadata', axis=1)
-```
-
-```{python}
-#| echo: false
-
-# TRANSFORMACIONES PARA SERIE TEMPORAL
-# Creacion de columnas de etiquetado (fines esteticos)
-long_df['Variable-label'] = long_df['Variable'].map({
-    'groundwater-depth': 'Prof. nivel freático (m)',
-    'water-content': 'Contenido de agua (m³/m³)',
-    'soil-temperature': 'Temperatura (°C)'
-})
-long_df['Depth-label'] = long_df['Depth'].str.replace('cm', ' cm').replace('NA', 'NA')
-
-# Reorden de columnas en df largo
-long_order = ['Timestamps', 'Sensor', 'Depth', 'Depth-label', 'Variable', 'Variable-label', 'Unit', 'Value']
-long_df = long_df.reindex(columns=long_order)
-
-# Definicion de listas para ordenar profundidades en graficas
-soil_depth_order = ['15 cm', '30 cm', '48 cm']
-full_depth_order = ['15 cm', '30 cm', '48 cm', 'NA']
-```
-
-```{python}
-#| echo: false
-
-# TRANSFORMACIONES PARA CORRELACIONES (CRUZADAS Y MOVILES)
-# Diferenciacion de datos para generar series temporales estacionarias
-# Estos datos requieren diferenciacion de segundo orden
-diff_wide_df = wide_df.diff().diff().dropna()
-
-# Definicion del rango de dias de desfase a analizar
-lag_days = 15
-# N dias hacia el pasado, N dias + 1 hacia el futuro (inclue el dia 0)
-lags = np.arange(-lag_days, lag_days+1)
-
-# Largo de la ventana movil (dias)
-window_days = 61
-
-# Nombres de las columnas a correlacionar
-groundwater_col = 'Piezometer_NA_groundwater-depth_m'
-
-# Definicion de diccionarios para iterar
-variables_map = {
-    'Contenido de agua (m³/m³)': 'water-content_m3/m3',
-    'Temperatura (°C)': 'soil-temperature_degreeC'
-}
-depth_map = {
-    '15 cm': '15cm', 
-    '30 cm': '30cm', 
-    '48 cm': '48cm'
-}
-
-# Defincion de objetos para almacenar resultados
-lag_results = []
-rolling_list = []
-
-# Calculo de limites de confianza al 95%
-n_obs = len(diff_wide_df)
-conf_cross_corr = 1.96 / np.sqrt(n_obs)
-conf_rolling_corr = 1.96 / np.sqrt(window_days)
-
-
-# Bucle principal: itera sobre las variables medidas
-for var_label, var_suffix in variables_map.items():
-    
-    # Bucle secundario: itera sobre las profundidades de sensor
-    for depth_label, depth_suffix in depth_map.items():
-
-        # Construccion del nombre de la columna con datos de suelo actual
-        col_name = f"TEROS12_{depth_suffix}_{var_suffix}"
-        
-        # Calculo de la correlacion movil entre nivel freatico y la variable actual a la prof. actual
-        r_series = diff_wide_df[groundwater_col
-                                ].rolling(window=window_days, center=True
-                                          ).corr(diff_wide_df[col_name])
-
-        # Almacenamiento de datos en un dataframe temporal (correlacion movil)
-        rolling_df = r_series.to_frame(name='Rolling-correlation')
-        rolling_df['Variable-label'] = var_label
-        rolling_df['Depth-label'] = depth_label
-
-        # Almacenamiento del df actual en una lista
-        rolling_list.append(rolling_df)
-
-        # Bucle terciario: itera sobre cada lag
-        for lag in lags:
-
-            # Calculo de la correlacion entre nivel freatico y la variable 
-            # actual a la profundidad actual en el lag actual
-            corr = diff_wide_df[groundwater_col
-                                ].corr(diff_wide_df[col_name
-                                                    ].shift(lag))
-
-            # Almacenamiento de resultados en un diccionario (correlaciones cruzadas)
-            lag_results.append({
-                'Variable-label': var_label,
-                'Depth-label': depth_label,
-                'Lag': lag,
-                'Cross-correlation': corr
-            })
-
-# Transformacion de resultados a dataframes
-cross_corr_df = pd.DataFrame(lag_results)
-rolling_corr_df = pd.concat(rolling_list, axis=0).dropna()
-```
-
-```{python}
-#| echo: false
-
-#TRANSFORMACIONES PARA GRAFICOS DE DISPERSION
-# Creacion de un df largo sin datos piezometricos
-soil_long_df = long_df[long_df['Sensor'] == 'TEROS12'].set_index('Timestamps')
-
-# Creacion de una columna con datos piezometricos
-piezo_col = long_df[long_df['Sensor'] == 'Piezometer'].set_index('Timestamps')['Value']
-
-# Union de la columna al df de suelos
-scatter_df = soil_long_df.merge(
-    piezo_col.rename('Groundwater-depth-m'),
-    left_index=True,
-    right_index=True)
-
-# Creacion de una columna con el valor del mes
-scatter_df['Month'] = scatter_df.index.month
-```
-
-```{python}
-#| echo: false
-
-# TRANSFORMACIONES PARA DIAGRAMA DE HOVMOLLER
-# Genera un array de numeros entre 0.15 y 0.48 separados cada 0.01 m 
-fine_depths = np.arange(0.15, 0.49, 0.01)
-
-# Lista para almacenar resultados
-processed_frames = []
-
-# Bucle principal: itera sobre las variables medidas
-for var_label, var_suffix in variables_map.items():
-    
-    # Creacion de una lista con nombres de columna para la variable actual
-    cols_list = [f'TEROS12_{depth_suffix}_{var_suffix}'
-                 # Itera sobre cada profundidad
-                 for depth_suffix in depth_map.values()]
-    
-    # Transposicion de los datos anchos. Nuevo formato:
-    # filas: profundidades - columnas: fechas - celdas: valores de la variable actual
-    matrix = wide_df[cols_list].T
-
-    # Renombrado del indice de la matriz
-    matrix.index = [0.15, 0.30, 0.48]
-
-    # Creacion de filas intermedias cada 0.01 m (vacias)
-    matrix_expanded = matrix.reindex(
-        matrix.index.union(fine_depths)).sort_index()
-    
-    # Interpolacion de valores en filas intermedias
-    matrix_interpolated = matrix_expanded.interpolate(method='index')
-
-    # Eliminacion de valores repetidos generados en la interpolacion
-    matrix_clean = matrix_interpolated.loc[fine_depths]
-
-    # Transformacion a formato largo
-    long_matrix = matrix_interpolated.stack().reset_index()
-
-    # Renombrado de columnas
-    long_matrix.columns = ['Depth_m', 'Date', 'Value']
-    long_matrix['Variable-label'] = var_label
-    
-    # Almacenamiento del df largo actual en una lista
-    processed_frames.append(long_matrix)
-
-# Concatenacion de los df largos contenidos en la lista (1 por variable)
-hovmoller_df = pd.concat(processed_frames, ignore_index=True)
-```
-
-```{python}
-#| echo: false
-
-#
-
-```
-
-```{python}
-#| echo: false
-
-# DEFINICION DE ESTILO DE GRAFICOS
-# Estilo global de seaborn
-sns.set_theme(
-    context='notebook',     # Escalado para visualizacion web
-    style='ticks',          # Fondo blanco sin ticks en los ejes
-    font='sans-serif'
-    )
-
-# Paleta de colores
-viridis = sns.color_palette("viridis_r", n_colors=3)
-palette_dict = {
-    '15 cm': viridis[0],    # Verde claro
-    '30 cm': viridis[1],    # Verde azulado
-    '48 cm': viridis[2],    # Azul
-    'NA': 'black'           # Negro
-}
-```
+Los datos crudos registrados por los instrumentos fueron procesados previo a este análisis. Los _scripts_ están disponibles [aquí](https://github.com/pibonacic/salt-flats-groundwater-depth/tree/main/code) y un set de datos de muestra [aquí](https://github.com/pibonacic/salt-flats-groundwater-depth/tree/main/data). Las visualizaciones presentadas en esta sección contemplan transformaciones de datos que no se muestran en los bloques de código desplegables; el código completo está disponible en [este notebook](https://github.com/pibonacic/salt-flats-groundwater-depth/blob/main/code/04_all-data_exploratory-visualization.ipynb). Para más información, se recomienda revisar el [README](https://github.com/pibonacic/Huasco-salt-flat-groundwater-and-soil-dynamics/blob/main/README.md) del repositorio.
 
 #### Series temporales
 En primer lugar, se graficaron las series de tiempo de profundidad del nivel freático, así como de contenido de agua y temperatura del suelo a las tres profundidades disponibles (Figura 2). Cabe mencionar que el eje Y del primer panel está invertido para facilitar la interpretación de la profundidad de las aguas subterráneas (la superficie está arriba).
@@ -296,6 +30,7 @@ Por otro lado, la temperatura del suelo tiene un marcado ciclo estacional, con v
 
 ```{python}
 #| echo: true
+#| eval: false
 #| code-fold: true
 #| fig-cap: 'Figura 2. Series temporales de profundidad del nivel freático, contenido de agua y temperatura del suelo.'
 
@@ -363,6 +98,8 @@ plt.subplots_adjust(top=0.93, bottom=0.11) # Ajusta espacio disponible para face
 plt.show()
 ```
 
+![Figura 2. Series temporales de profundidad del nivel freático, contenido de agua y temperatura del suelo.](../figures/time-series.png){width=100%}
+
 #### Correlaciones cruzadas
 Para evaluar la existencia de desfases temporales entre las series de datos se ejecutó un análisis de correlaciones cruzadas. En él, se calculó la correlación de Pearson entre la serie de profundidad del nivel freático y las series de contenido de agua y temperatura del suelo, desplazadas temporalmente hasta ±15 días (Figura 3). Desfases mayores no entregan relaciones significativas considerando un nivel de confianza del 95%. Previo al análisis, las series fueron diferenciadas para hacerlas [estacionarias](https://otexts.com/fpp2/stationarity.html).
 
@@ -372,6 +109,7 @@ Respecto a la temperatura del suelo, se constatan correlaciones negativas en el 
 
 ```{python}
 #| echo: true
+#| eval: false
 #| code-fold: true
 #| fig-cap: 'Figura 3. Correlaciones entre series de profundidad del nivel freático y variables del suelo, desfasadas temporalmente.'
 
@@ -443,6 +181,8 @@ plt.subplots_adjust(top=0.93, bottom=0.11) # Ajusta espacio disponible para face
 plt.show()
 ```
 
+![Figura 3. Correlaciones entre series de profundidad del nivel freático y variables del suelo, desfasadas temporalmente.](../figures/cross-correlations.png){width=100%}
+
 #### Gráficos de dispersión
 A fin de caracterizar la relación entre profundidad de las aguas subterráneas y las variables del suelo en diferentes temporadas, se generaron gráficos de dispersión a distintas profundidades con datos diferenciados por mes (Figura 4). Notar que los ejes Y están invertidos en todos los gráficos.
 
@@ -452,6 +192,7 @@ Por otro lado, los gráficos permiten identificar el contenido de agua al que se
 
 ```{python}
 #| echo: true
+#| eval: false
 #| code-fold: true
 #| fig-cap: 'Figura 4. Relaciones entre profundidad del nivel freático y variables del suelo diferenciadas mensualmente.'
 
@@ -524,6 +265,8 @@ plt.subplots_adjust(top=0.94, right=0.85) # Ajusta espacio disponible para facet
 plt.show()
 ```
 
+![Figura 4. Relaciones entre profundidad del nivel freático y variables del suelo diferenciadas mensualmente.](../figures/scatter-plots.png){width=100%}
+
 #### Correlaciones móviles
 Con el objetivo de visualizar la evolución de las correlaciones entre variables en diferentes estaciones del año, se hizo un análisis de correlación empleando ventanas móviles de 61 días. En él, se calculó la correlación de Pearson entre las series estacionarias para cada día disponible usando las observaciones de ±30 días, además del día presente (Figura 5). Se definió una ventana de dos meses para contar con un número de observaciones suficiente para el análisis estadístico, además de suavizar los resultados obtenidos y facilitar la interpretación.
 
@@ -533,6 +276,7 @@ En la variable temperatura se da un patrón opuesto: en primavera se dan relacio
 
 ```{python}
 #| echo: true
+#| eval: false
 #| code-fold: true
 #| fig-cap: 'Figura 5. Evolución temporal de las correlaciones entre profundidad del nivel freático y variables del suelo en ventanas móviles de dos meses.'
 
@@ -605,8 +349,10 @@ plt.subplots_adjust(top=0.93, bottom=0.11) # Ajusta espacio disponible para face
 plt.show()
 ```
 
-#### Diagrama de Hövmoller
-Finalmente, se construyó un diagrama de Hövmoller para representar la evolución temporal de las variables de suelo en un perfil vertical, al cual se superpuso la profundidad de las aguas subterráneas (Figura 6). El perfil se obtuvo interpolando cada un centímetro los datos entre los sensores de suelo, para cada día disponible.
+![Figura 5. Evolución temporal de las correlaciones entre profundidad del nivel freático y variables del suelo en ventanas móviles de dos meses.](../figures/rolling-correlations.png){width=100%}
+
+#### Diagramas de Hövmoller
+Finalmente, se construyeron diagramas de Hövmoller para representar la evolución temporal de las variables de suelo en un perfil vertical, al cual se superpuso la profundidad de las aguas subterráneas (Figura 6). El perfil se obtuvo interpolando cada un centímetro los datos entre los sensores de suelo, para cada día disponible.
 
 En el diagrama superior se ve cómo la profundidad de las aguas subterráneas tiene un efecto sobre la distribución vertical del agua en el suelo: cuando el nivel freático está más alto, el suelo alcanza mayores valores de contenido de agua cerca de la superficie, y se reduce cuando el nivel desciende.
 
@@ -614,6 +360,7 @@ Por el contrario, el diagrama de temperaturas no muestra una relación aparente 
 
 ```{python}
 #| echo: true
+#| eval: false
 #| code-fold: true
 #| fig-cap: 'Figura 6. Dinámica temporal de las variables de suelo en el perfil con datos interpolados verticalmente.'
 
@@ -717,6 +464,8 @@ plt.subplots_adjust(top=0.94, bottom=0.11, left=0.1) # Ajusta espacio disponible
 
 plt.show()
 ```
+
+![Figura 5. Figura 6. Dinámica temporal de las variables de suelo en el perfil con datos interpolados verticalmente.](../figures/hovmoller-diagram.png){width=100%}
 
 ## Conclusiones
 Los resultados de este trabajo sugieren que existe una conexión hidráulica casi inmediata entre la profundidad del nivel freático y el contenido de agua en el suelo, identificada mediante una correlación inversa sin desfase temporal. Sin embargo, esta relación no es lineal y está condicionada por la profundidad. Los sensores profundos (48 cm) permanecen en saturación casi permanente, lo que limita su sensibilidad a las fluctuaciones del acuífero, mientras que los sensores intermedios (30 cm) ofrecen el mejor rango dinámico para inferir fluctuaciones del nivel freático debido a su ubicación en la zona de oscilación de la franja capilar.
